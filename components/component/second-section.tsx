@@ -48,15 +48,15 @@ const SELECT_OPTIONS: Record<keyof SurveyState, SelectOption[]> = {
   first: [
     {
       value: "1",
-      label: "I know what a CC is and I saw this office&apos;s CC.",
+      label: "I know what a CC is and I saw this office's CC.",
     },
     {
       value: "2",
-      label: "I know what a CC is but I did NOT see this office&apos;s CC.",
+      label: "I know what a CC is but I did NOT see this office's CC.",
     },
     {
       value: "3",
-      label: "I learned of the CC only when I saw this office&apos;s CC.",
+      label: "I learned of the CC only when I saw this office's CC.",
     },
     {
       value: "4",
@@ -87,8 +87,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
   <div className="space-y-2">
     <Label>{label}</Label>
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="overflow-hidden">
-        <SelectValue className="overflow-hidden" />
+      <SelectTrigger>
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectItem disabled value="0">
@@ -125,7 +125,7 @@ export const SecondSection: React.FC<SecondSectionProps> = ({
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="mx-auto max-w-md">
+        <Card className="mx-auto md:max-w-md max-w-sm">
           <CardHeader>
             <CardTitle>Customer Awareness Survey</CardTitle>
             <CardDescription>

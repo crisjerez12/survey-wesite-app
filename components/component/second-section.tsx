@@ -1,4 +1,6 @@
 "use client";
+
+import { useState } from "react";
 import {
   Card,
   CardHeader,
@@ -16,12 +18,110 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 
-export function SecondSection({ onSection }: any) {
-  const [first, setFirst] = useState("0");
-  const [second, setSecond] = useState("0");
-  const [third, setThird] = useState("0");
+interface SurveyState {
+  first: string;
+  second: string;
+  third: string;
+}
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SelectFieldProps {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: SelectOption[];
+}
+
+interface SecondSectionProps {
+  onSection: (section: number) => void;
+  onResponse: (updateFn: (prev: any) => any) => void;
+}
+
+const INITIAL_STATE: SurveyState = { first: "0", second: "0", third: "0" };
+
+const SELECT_OPTIONS: Record<keyof SurveyState, SelectOption[]> = {
+  first: [
+    {
+      value: "1",
+      label: "I know what a CC is and I saw this office&apos;s CC.",
+    },
+    {
+      value: "2",
+      label: "I know what a CC is but I did NOT see this office&apos;s CC.",
+    },
+    {
+      value: "3",
+      label: "I learned of the CC only when I saw this office&apos;s CC.",
+    },
+    {
+      value: "4",
+      label: "I do not know what a CC is and I did not see one in this office.",
+    },
+  ],
+  second: [
+    { value: "1", label: "Easy to see" },
+    { value: "2", label: "Somewhat easy to see" },
+    { value: "3", label: "Difficult to see" },
+    { value: "4", label: "Not visible at all" },
+    { value: "5", label: "N/A" },
+  ],
+  third: [
+    { value: "1", label: "Helped very much" },
+    { value: "2", label: "Somewhat helped" },
+    { value: "3", label: "Did not help" },
+    { value: "4", label: "N/A" },
+  ],
+};
+
+const SelectField: React.FC<SelectFieldProps> = ({
+  label,
+  value,
+  onChange,
+  options,
+}) => (
+  <div className="space-y-2">
+    <Label>{label}</Label>
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem disabled value="0">
+          Select an option
+        </SelectItem>
+        {options.map(({ value, label }) => (
+          <SelectItem key={value} value={value}>
+            {label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+);
+
+export const SecondSection: React.FC<SecondSectionProps> = ({
+  onSection,
+  onResponse,
+}) => {
+  const [state, setState] = useState<SurveyState>(INITIAL_STATE);
+
+  const handleChange = (field: keyof SurveyState) => (value: string) => {
+    setState((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const isResponseValid =
+    state.first === "4" || Object.values(state).every((val) => val !== "0");
+
+  const handleSubmit = () => {
+    onResponse((prev) => ({ ...prev, secondSection: state }));
+    onSection(3);
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 flex items-center justify-center p-4">
@@ -34,88 +134,39 @@ export function SecondSection({ onSection }: any) {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label>
-                Which of the following best describes your awareness of a CC?
-              </Label>
-              <Select value={first} onValueChange={setFirst}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem disabled value="0">
-                    Select an option
-                  </SelectItem>
-                  <SelectItem value="1">
-                    I know what a CC is and I saw this office&apos;s CC.
-                  </SelectItem>
-                  <SelectItem value="2">
-                    I know what a CC is but I did NOT see this office&apos;s CC.
-                  </SelectItem>
-                  <SelectItem value="3">
-                    I learned of the CC only when I saw this office&apos;s CC.
-                  </SelectItem>
-                  <SelectItem value="4">
-                    I do not know what a CC is and I did not see one in this
-                    office.
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {first !== "4" && (
-              <div className="space-y-2">
-                <div className="space-y-2">
-                  <Label htmlFor="cc2">
-                    If aware of CC (answered 1-3 in CC1), would you say that the
-                    CC of this office was...?
-                  </Label>
-                  <Select value={second} onValueChange={setSecond}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem disabled value="0">
-                        Select an option
-                      </SelectItem>
-                      <SelectItem value="1">Easy to see</SelectItem>
-                      <SelectItem value="2">Somewhat easy to see</SelectItem>
-                      <SelectItem value="3">Difficult to see</SelectItem>
-                      <SelectItem value="4">Not visible at all</SelectItem>
-                      <SelectItem value="5">N/A</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="cc3">
-                    If aware of CC (answered codes 1-3 in CC1), how much did the
-                    CC help you in your transaction?
-                  </Label>
-                  <Select value={third} onValueChange={setThird}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem disabled value="0">
-                        Select an option
-                      </SelectItem>
-                      <SelectItem value="1">Helped very much</SelectItem>
-                      <SelectItem value="2">Somewhat helped</SelectItem>
-                      <SelectItem value="3">Did not help</SelectItem>
-                      <SelectItem value="4">N/A</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
+            <SelectField
+              label="Which of the following best describes your awareness of a CC?"
+              value={state.first}
+              onChange={handleChange("first")}
+              options={SELECT_OPTIONS.first}
+            />
+            {state.first !== "4" && (
+              <>
+                <SelectField
+                  label="If aware of CC (answered 1-3 in CC1), would you say that the CC of this office was...?"
+                  value={state.second}
+                  onChange={handleChange("second")}
+                  options={SELECT_OPTIONS.second}
+                />
+                <SelectField
+                  label="If aware of CC (answered codes 1-3 in CC1), how much did the CC help you in your transaction?"
+                  value={state.third}
+                  onChange={handleChange("third")}
+                  options={SELECT_OPTIONS.third}
+                />
+              </>
             )}
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button variant="outline" onClick={() => onSection(1)}>
               Previous
             </Button>
-            <Button onClick={() => onSection(3)}>Next</Button>
+            <Button disabled={!isResponseValid} onClick={handleSubmit}>
+              Next
+            </Button>
           </CardFooter>
         </Card>
       </div>
     </div>
   );
-}
+};

@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState, useCallback, useMemo, memo } from "react";
 import {
   Card,
   CardHeader,
@@ -19,83 +20,125 @@ import {
 } from "@/components/ui/dialog";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { QUESTIONS } from "@/lib/constants";
-import { useState } from "react";
 
-// Define the type for a single question
-type Question = {
-  order: number;
-  question: string;
-  response?: string; // Optional because it may not be filled initially
-};
-
-// Define the type for the props
+interface OptionButtonProps {
+  option: string;
+  isSelected: boolean;
+  onClick: () => void;
+}
 interface ThirdSectionProps {
   onSection: (section: number) => void;
+  onResponse: (updateFn: (prev: any) => any) => void;
 }
 
-export function ThirdSection({ onSection }: ThirdSectionProps) {
+const OPTIONS = [
+  "Strongly-Agree",
+  "Agree",
+  "Neutral",
+  "Disagree",
+  "Strongly-Disagree",
+];
+
+const OptionButton: React.FC<OptionButtonProps> = memo(function OptionButton({
+  option,
+  isSelected,
+  onClick,
+}) {
+  return (
+    <Button
+      onClick={onClick}
+      className={`${isSelected ? "bg-black" : ""} capitalize`}
+    >
+      {option}
+    </Button>
+  );
+});
+export function ThirdSection({ onSection, onResponse }: ThirdSectionProps) {
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [selectedOptions, setSelectedOptions] = useState(QUESTIONS);
-  const [selectedOption, setSelectedOption] = useState<string | null>(null); // Track the selected option
-  console.log(selectedOptions);
-  const handleNextQuestion = (item: string) => {
-    setSelectedOption(item); // Update the selected option
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
-    // Delay the state update and question navigation by 0.2 seconds
-    setTimeout(() => {
-      setSelectedOptions((prev) => {
-        const updated = [...prev];
-        updated[currentQuestion].response = item;
-        return updated;
-      });
+  const handleNextQuestion = useCallback(
+    (item: string) => {
+      if (isProcessing) return;
+
+      setIsProcessing(true);
+      setSelectedOption(item);
+
       setTimeout(() => {
-        if (currentQuestion < QUESTIONS.length - 1) {
-          setCurrentQuestion((prev) => prev + 1);
-          setSelectedOption(null); // Update the selected option
-        }
-      }, 500);
-    }, 200);
-  };
+        setSelectedOptions((prev) => {
+          const updated = [...prev];
+          updated[currentQuestion].response = item;
+          return updated;
+        });
 
-  const handlePreviousQuestion = () => {
-    if (currentQuestion === 0) onSection(1);
-    if (currentQuestion > 0) setCurrentQuestion((prev) => prev - 1);
-  };
+        if (currentQuestion < QUESTIONS.length - 1) {
+          setTimeout(() => {
+            setCurrentQuestion((prev) => prev + 1);
+            setSelectedOption(null);
+            setIsProcessing(false);
+          }, 300); // Delay before moving to next question
+        } else {
+          setIsProcessing(false);
+        }
+      }, 500); // Delay to show selection
+    },
+    [currentQuestion, isProcessing]
+  );
+
+  const handlePreviousQuestion = useCallback(() => {
+    if (currentQuestion === 0) onSection(2);
+    else setCurrentQuestion((prev) => prev - 1);
+  }, [currentQuestion, onSection]);
+
+  const handleSubmit = useCallback(() => {
+    onResponse((prev: any) => ({
+      ...prev,
+      thirdSection: selectedOptions,
+    }));
+    onSection(4);
+  }, [onResponse, onSection, selectedOptions]);
+
+  const isLastQuestion = currentQuestion === QUESTIONS.length - 1;
+
+  const currentQuestionData = useMemo(
+    () => QUESTIONS[currentQuestion],
+    [currentQuestion]
+  );
 
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>{`${QUESTIONS[currentQuestion].order}: ${QUESTIONS[currentQuestion].question}`}</CardTitle>
+            <CardTitle>{`${currentQuestionData.order}: ${currentQuestionData.question}`}</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
-            {[
-              "Strongly-Agree",
-              "Agree",
-              "Neutral",
-              "Disagree",
-              "Strongly-Disagree",
-            ].map((optionItem) => (
-              <Button
-                key={optionItem}
-                onClick={() => handleNextQuestion(optionItem)}
-                className={`${
-                  selectedOption === optionItem ? "bg-black" : ""
-                } capitalize`}
-              >
-                {optionItem}
-              </Button>
+            {OPTIONS.map((option) => (
+              <OptionButton
+                key={option}
+                option={option}
+                isSelected={selectedOption === option}
+                onClick={() => handleNextQuestion(option)}
+              />
             ))}
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={handlePreviousQuestion}>
+            <Button
+              variant="outline"
+              onClick={handlePreviousQuestion}
+              disabled={isProcessing}
+            >
               Previous
             </Button>
-            {currentQuestion === QUESTIONS.length - 1 && selectedOption ? (
+            {isLastQuestion && selectedOption ? (
               <Dialog>
-                <DialogTrigger>
-                  <Button className="inline-flex bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 rounded-lg">
+                <DialogTrigger asChild>
+                  <Button
+                    className="inline-flex bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 rounded-lg"
+                    disabled={isProcessing}
+                  >
                     Submit
                   </Button>
                 </DialogTrigger>
@@ -112,7 +155,7 @@ export function ThirdSection({ onSection }: ThirdSectionProps) {
                         Go Back
                       </Button>
                     </DialogClose>
-                    <Button onClick={() => onSection(4)}>Submit</Button>
+                    <Button onClick={handleSubmit}>Submit</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

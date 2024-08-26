@@ -55,3 +55,23 @@ export const QUESTIONS: Question[] = [
     response: "",
   },
 ];
+export const REGIONS = [
+  "NCR",
+  "CAR",
+  "Region I",
+  "Region II",
+  "Region III",
+  "Region IV-A",
+  "Mimaropa",
+  "Region V",
+  "Region VI",
+  "NIR",
+  "Region VII",
+  "Region VIII",
+  "Region IX",
+  "Region X",
+  "Region XI",
+  "Region XII",
+  "Region XIII",
+  "BARMM",
+];

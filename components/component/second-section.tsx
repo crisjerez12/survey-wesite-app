@@ -87,8 +87,8 @@ const SelectField: React.FC<SelectFieldProps> = ({
   <div className="space-y-2">
     <Label>{label}</Label>
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
-        <SelectValue />
+      <SelectTrigger className="overflow-hidden">
+        <SelectValue className="overflow-hidden" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem disabled value="0">

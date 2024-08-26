@@ -90,7 +90,7 @@ const SelectField: React.FC<SelectFieldProps> = ({
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="max-w-sm ">
         <SelectItem disabled value="0">
           Select an option
         </SelectItem>
@@ -125,7 +125,7 @@ export const SecondSection: React.FC<SecondSectionProps> = ({
   return (
     <div className="flex flex-col h-screen">
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="mx-auto md:max-w-md max-w-sm">
+        <Card className="mx-auto md:max-w-md max-w-sm p-2 md:p-0">
           <CardHeader>
             <CardTitle>Customer Awareness Survey</CardTitle>
             <CardDescription>

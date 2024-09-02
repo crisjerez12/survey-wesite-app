@@ -6,7 +6,6 @@ import { ThirdSection } from "@/components/component/third-section";
 import { useState, useEffect } from "react";
 
 async function submitResponse(data: any) {
-  console.log("submit response section:" + data);
   try {
     const res = await fetch("/api/responses", {
       method: "POST",
@@ -24,7 +23,7 @@ async function submitResponse(data: any) {
 
 export default function Home() {
   const [section, setSection] = useState(1);
-  const [response, setResponse] = useState<any>({}); // Specify type if possible
+  const [response, setResponse] = useState<any>({});
 
   useEffect(() => {
     const value = localStorage.getItem("response");

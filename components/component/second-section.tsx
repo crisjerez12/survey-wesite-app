@@ -85,9 +85,9 @@ const SelectField: React.FC<SelectFieldProps> = ({
   options,
 }) => (
   <div className="space-y-2">
-    <Label>{label}</Label>
+    <Label className="text-blue-900">{label}</Label>
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger>
+      <SelectTrigger className="bg-blue-100 text-blue-900">
         <SelectValue />
       </SelectTrigger>
       <SelectContent className="max-w-sm ">
@@ -123,12 +123,14 @@ export const SecondSection: React.FC<SecondSectionProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-blue-50">
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="mx-auto md:max-w-md max-w-sm p-2 md:p-0">
+        <Card className="mx-auto md:max-w-md max-w-sm p-2 md:p-0 bg-blue-100">
           <CardHeader>
-            <CardTitle>Customer Awareness Survey</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-blue-900">
+              Customer Awareness Survey
+            </CardTitle>
+            <CardDescription className="text-blue-700">
               Please answer the following questions about your awareness and
               perception of the Citizen&apos;s Charter(CC) in this office.
             </CardDescription>
@@ -158,10 +160,18 @@ export const SecondSection: React.FC<SecondSectionProps> = ({
             )}
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => onSection(1)}>
+            <Button
+              variant="outline"
+              onClick={() => onSection(1)}
+              className="text-blue-900 border-blue-900"
+            >
               Previous
             </Button>
-            <Button disabled={!isResponseValid} onClick={handleSubmit}>
+            <Button
+              disabled={!isResponseValid}
+              onClick={handleSubmit}
+              className="bg-blue-900 text-white"
+            >
               Next
             </Button>
           </CardFooter>

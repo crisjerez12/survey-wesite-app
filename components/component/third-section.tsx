@@ -47,7 +47,9 @@ const OptionButton: React.FC<OptionButtonProps> = memo(function OptionButton({
   return (
     <Button
       onClick={onClick}
-      className={`${isSelected ? "bg-black" : ""} capitalize`}
+      className={`${
+        isSelected ? "bg-blue-900 text-white" : "bg-blue-100 text-blue-900"
+      } capitalize`}
     >
       {option}
     </Button>
@@ -108,11 +110,11 @@ export function ThirdSection({ onSection, onResponse }: ThirdSectionProps) {
   );
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-blue-50">
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md bg-blue-100">
           <CardHeader>
-            <CardTitle>{`${currentQuestionData.order}: ${currentQuestionData.question}`}</CardTitle>
+            <CardTitle className="text-blue-900">{`${currentQuestionData.order}: ${currentQuestionData.question}`}</CardTitle>
           </CardHeader>
           <CardContent className="grid gap-4">
             {OPTIONS.map((option) => (
@@ -129,6 +131,7 @@ export function ThirdSection({ onSection, onResponse }: ThirdSectionProps) {
               variant="outline"
               onClick={handlePreviousQuestion}
               disabled={isProcessing}
+              className="text-blue-900 border-blue-900"
             >
               Previous
             </Button>
@@ -136,7 +139,7 @@ export function ThirdSection({ onSection, onResponse }: ThirdSectionProps) {
               <Dialog>
                 <DialogTrigger asChild>
                   <Button
-                    className="inline-flex bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 rounded-lg"
+                    className="inline-flex bg-blue-900 px-4 py-2 text-sm font-medium text-white rounded-lg"
                     disabled={isProcessing}
                   >
                     Submit

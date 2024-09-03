@@ -50,7 +50,7 @@ const SelectField: React.FC<{
   setValue: (name: keyof SurveySchema, value: string) => void;
 }> = ({ name, placeholder, options, setValue }) => (
   <Select onValueChange={(value) => setValue(name, value)}>
-    <SelectTrigger>
+    <SelectTrigger className="bg-blue-100 text-blue-900">
       <SelectValue placeholder={placeholder} />
     </SelectTrigger>
     <SelectContent>
@@ -80,10 +80,10 @@ export function FirstSection({ onResponse, onSection }: FirstSectionProps) {
   };
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-blue-50">
       <div className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md p-6 space-y-6">
-          <h2 className="text-2xl font-bold">Survey</h2>
+        <Card className="w-full max-w-md p-6 space-y-6 bg-blue-100">
+          <h2 className="text-2xl font-bold text-blue-900">Survey</h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
             <SelectField
@@ -101,11 +101,14 @@ export function FirstSection({ onResponse, onSection }: FirstSectionProps) {
             />
 
             <div className="grid gap-2">
-              <Label htmlFor="age">Age</Label>
+              <Label htmlFor="age" className="text-blue-900">
+                Age
+              </Label>
               <Input
                 id="age"
                 type="number"
                 placeholder="Enter your age"
+                className="bg-blue-100 text-blue-900"
                 {...register("age")}
               />
             </div>
@@ -121,16 +124,23 @@ export function FirstSection({ onResponse, onSection }: FirstSectionProps) {
             />
 
             <div className="grid gap-2">
-              <Label htmlFor="service">Service Availed</Label>
+              <Label htmlFor="service" className="text-blue-900">
+                Service Availed
+              </Label>
               <Input
                 id="service"
                 type="text"
                 placeholder="Enter the service availed"
+                className="bg-blue-100 text-blue-900"
                 {...register("serviceAvailed")}
               />
             </div>
 
-            <Button type="submit" disabled={!isValid} className="w-full">
+            <Button
+              type="submit"
+              disabled={!isValid}
+              className="w-full bg-blue-900 text-white"
+            >
               Proceed
             </Button>
           </form>

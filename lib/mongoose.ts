@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const MONGODB_URI = process.env.MONGODB_URI;
 
-const connect = () => {
+const connect = async () => {
   const connectionState = mongoose.connection.readyState;
 
   if (connectionState === 1) {
@@ -14,14 +14,15 @@ const connect = () => {
   }
 
   try {
-    mongoose.connect(MONGODB_URI!, {
+    await mongoose.connect(MONGODB_URI!, {
       dbName: "survey-website-app",
       bufferCommands: true,
     });
     console.log("Connected");
-  } catch (error: any) {
-    console.log("Error", error);
-    throw new Error("Error: ", error);
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    throw new Error("Error connecting to MongoDB");
   }
 };
+
 export default connect;

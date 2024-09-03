@@ -55,7 +55,7 @@ export const QUESTIONS: Question[] = [
     response: "",
   },
 ];
-export const REGIONS = [
+export const REGIONS: string[] = [
   "NCR",
   "CAR",
   "Region I",
